@@ -47,6 +47,10 @@ private:
     /// \brief Flag for parsing the second level of sequence ID line of input FASTQ files
     bool parse_seq_id_level_2;
 
+    /// \brief Flush single written sequence from output stream to disk.
+    /// Note: this option needs to be switched on in a multi-threading envronment.
+    bool flush_seq_ostream;
+
     /// \brief Number of sequence fragments to read from input FASTQ files in a batch
     std::size_t n_read_seqs;
 
@@ -54,8 +58,9 @@ private:
     /// This is the capacity of each sequence group in the demultiplexer.
     std::size_t n_group_seqs;
 
-    /// \brief Flush written sequences from output stream to disk.
-    bool flush_ostream;
+    /// \brief Flush multiple written sequences from output stream to disk.
+    /// Note: this option needs to be switched on in a multi-threading envronment.
+    bool flush_seqs_ostream;
 
     /// \brief Type of line delimiter of FASTQ paths file
     std::string fastq_paths_file_line_delim_type;
@@ -77,7 +82,7 @@ private:
 
 public:
 
-    FASTQFileDemuxer(const std::string& fastq_file_paths_file_path, const std::string& well_barcode_file_path, const std::string& demux_file_name, const std::string& demux_file_dir, bool parse_seq=true, bool parse_seq_id_level_1=true, bool parse_seq_id_level_2=false, std::size_t n_read_seqs=131072, std::size_t n_group_seqs=131072, bool flush_ostream=true, const std::string& fastq_paths_file_line_delim_type="unix", const std::string& well_barcode_file_line_delim_type="unix", const std::string& fastq_data_file_line_delim_type="unix", bool verbose=false) :
+    FASTQFileDemuxer(const std::string& fastq_file_paths_file_path, const std::string& well_barcode_file_path, const std::string& demux_file_name, const std::string& demux_file_dir, bool parse_seq=true, bool parse_seq_id_level_1=true, bool parse_seq_id_level_2=false, bool flush_seq_ostream=false, std::size_t n_read_seqs=131072, std::size_t n_group_seqs=131072, bool flush_seqs_ostream=true, const std::string& fastq_paths_file_line_delim_type="unix", const std::string& well_barcode_file_line_delim_type="unix", const std::string& fastq_data_file_line_delim_type="unix", bool verbose=false) :
         fastq_file_paths_file_path{fastq_file_paths_file_path},
         well_barcode_file_path{well_barcode_file_path},
         demux_file_name{demux_file_name},
@@ -85,9 +90,10 @@ public:
         parse_seq{parse_seq},
         parse_seq_id_level_1{parse_seq_id_level_1},
         parse_seq_id_level_2{parse_seq_id_level_2},
+        flush_seq_ostream{flush_seq_ostream},
         n_read_seqs{n_read_seqs},
         n_group_seqs{n_group_seqs},
-        flush_ostream{flush_ostream},
+        flush_seqs_ostream{flush_seqs_ostream},
         fastq_paths_file_line_delim_type{fastq_paths_file_line_delim_type},
         well_barcode_file_line_delim_type{well_barcode_file_line_delim_type},
         fastq_data_file_line_delim_type{fastq_data_file_line_delim_type},
@@ -97,7 +103,7 @@ public:
         PairedFASTQFilePathReader fastq_file_path_reader(fastq_file_paths_file_path, fastq_paths_file_line_delim_type);
         fastq_file_paths = fastq_file_path_reader.read();
         // 2) Setup FASTQ sequence demultiplexer.
-        seq_demuxer_ptr = std::make_unique<FASTQDemuxerType>(well_barcode_file_path, demux_file_name, demux_file_dir, n_group_seqs, flush_ostream, well_barcode_file_line_delim_type, verbose);
+        seq_demuxer_ptr = std::make_unique<FASTQDemuxerType>(well_barcode_file_path, demux_file_name, demux_file_dir, n_group_seqs, flush_seqs_ostream, well_barcode_file_line_delim_type, verbose);
     }
 
     template<typename... ArgTypes>
@@ -107,8 +113,8 @@ public:
         for(const auto& fastq_file_path : fastq_file_paths)
         {
             // Open a pair of FASTQ files.
-            FASTQFileType r1_fastq_file(fastq_file_path.first, fastq_data_file_line_delim_type, parse_seq, parse_seq_id_level_1, parse_seq_id_level_2);
-            FASTQFileType r2_fastq_file(fastq_file_path.second, fastq_data_file_line_delim_type, parse_seq, parse_seq_id_level_1, parse_seq_id_level_2);
+            FASTQFileType r1_fastq_file(fastq_file_path.first, fastq_data_file_line_delim_type, parse_seq, parse_seq_id_level_1, parse_seq_id_level_2, flush_seq_ostream);
+            FASTQFileType r2_fastq_file(fastq_file_path.second, fastq_data_file_line_delim_type, parse_seq, parse_seq_id_level_1, parse_seq_id_level_2, flush_seq_ostream);
             // Send all sequences from paired FASTQ files to sequence demultiplexer.
             PairedFASTQSequencePipe<FASTQFileType, FASTQDemuxerType> seq_pipe(r1_fastq_file, r2_fastq_file, *seq_demuxer_ptr);
             seq_pipe.run(n_read_seqs, args...);

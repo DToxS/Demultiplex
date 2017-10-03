@@ -23,7 +23,7 @@ int main(int argc, const char *argv[])
     try
     {
         // Retrieve input arguments from command line.
-        hts::FASTQSequenceParserArguments args(argc, argv, 6, 12);
+        hts::FASTQSequenceParserArguments args(argc, argv, 6, 11);
         // Check input arguments.
         args.check();
 
@@ -31,11 +31,14 @@ int main(int argc, const char *argv[])
         if(args.seq_data_type == "DGE")
         {
             // Initialize the parameters for reading input DGE FASTQ sequences.
-            bool parse_seq {true}, parse_seq_id_level_1 {true}, parse_seq_id_level_2 {false};
+            bool parse_seq = true, parse_seq_id_level_1 = true, parse_seq_id_level_2 = false;
             // Initialize the parameters for creating output DGE FASTQ sequences.
-            bool parse_pair_seq=true, parse_compos_seq=true;
+            bool parse_pair_seq = true, parse_compos_seq = true;
+            // Initialize the parameters for controlling disk writing.
+            /// Note: both options need to be turned on in a multi-threading envronment.
+            bool flush_seq_ostream = false, flush_seqs_ostream = true;
             // Initialize the DGE FASTQ file demultiplexer.
-            hts::FASTQFileDemuxer<hts::DGEIlluminaFASTQFile, hts::DGEIlluminaFASTQSequenceDemuxer> dge_file_demuxer(args.fastq_file_paths_file_path, args.well_barcode_file_path, args.demux_file_name, args.demux_file_dir, parse_seq, parse_seq_id_level_1, parse_seq_id_level_2, args.n_read_seqs, args.n_group_seqs, args.flush_ostream, args.fastq_paths_file_line_delim_type, args.well_barcode_file_line_delim_type, args.fastq_data_file_line_delim_type);
+            hts::FASTQFileDemuxer<hts::DGEIlluminaFASTQFile, hts::DGEIlluminaFASTQSequenceDemuxer> dge_file_demuxer(args.fastq_file_paths_file_path, args.well_barcode_file_path, args.demux_file_name, args.demux_file_dir, parse_seq, parse_seq_id_level_1, parse_seq_id_level_2, flush_seq_ostream, args.n_read_seqs, args.n_group_seqs, flush_seqs_ostream, args.fastq_paths_file_line_delim_type, args.well_barcode_file_line_delim_type, args.fastq_data_file_line_delim_type);
             // Run DGE FASTQ file demultiplexer.
             dge_file_demuxer.run(parse_pair_seq, parse_compos_seq);
             // Print demultiplexing summary for DGE FASTQ files.
@@ -44,11 +47,14 @@ int main(int argc, const char *argv[])
         else if(args.seq_data_type == "CONV")
         {
             // Initialize the parameters for reading input DGE FASTQ sequences.
-            bool parse_seq {true}, parse_seq_id_level_1 {true}, parse_seq_id_level_2 {true};
+            bool parse_seq = true, parse_seq_id_level_1 = true, parse_seq_id_level_2 = true;
             // Initialize the parameters for creating output Conv FASTQ sequences.
-            bool parse_pair_seq=true;
+            bool parse_pair_seq = true;
+            // Initialize the parameters for controlling disk writing.
+            /// Note: both options need to be turned on in a multi-threading envronment.
+            bool flush_seq_ostream = false, flush_seqs_ostream = true;
             // Initialize the Conv FASTQ file demultiplexer.
-            hts::FASTQFileDemuxer<hts::ConvIlluminaFASTQFile, hts::ConvIlluminaFASTQSequenceDemuxer> conv_file_demuxer(args.fastq_file_paths_file_path, args.well_barcode_file_path, args.demux_file_name, args.demux_file_dir, parse_seq, parse_seq_id_level_1, parse_seq_id_level_2, args.n_read_seqs, args.n_group_seqs, args.flush_ostream, args.fastq_paths_file_line_delim_type, args.well_barcode_file_line_delim_type, args.fastq_data_file_line_delim_type);
+            hts::FASTQFileDemuxer<hts::ConvIlluminaFASTQFile, hts::ConvIlluminaFASTQSequenceDemuxer> conv_file_demuxer(args.fastq_file_paths_file_path, args.well_barcode_file_path, args.demux_file_name, args.demux_file_dir, parse_seq, parse_seq_id_level_1, parse_seq_id_level_2, flush_seq_ostream, args.n_read_seqs, args.n_group_seqs, flush_seqs_ostream, args.fastq_paths_file_line_delim_type, args.well_barcode_file_line_delim_type, args.fastq_data_file_line_delim_type);
             // Run DGE FASTQ file demultiplexer.
             conv_file_demuxer.run(parse_pair_seq);
             // Print demultiplexing summary for DGE FASTQ files.

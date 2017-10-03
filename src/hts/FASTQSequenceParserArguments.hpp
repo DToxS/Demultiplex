@@ -45,9 +45,6 @@ public:
     /// This is the capacity of each sequence group in the demultiplexer.
     std::size_t n_group_seqs;
 
-    /// \brief Flush written sequences from output stream to disk.
-    bool flush_ostream;
-
     /// \brief Type of line delimiter of FASTQ paths file
     std::string fastq_paths_file_line_delim_type;
 

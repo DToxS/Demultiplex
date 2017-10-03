@@ -14,29 +14,29 @@ namespace hts
 
 FASTQSequence::FASTQSequence() {}
 
-FASTQSequence::FASTQSequence(const FASTQSequenceLines& lines, bool parse_seq) : lines{lines}, parse_seq{parse_seq}
+    FASTQSequence::FASTQSequence(const FASTQSequenceLines& lines, bool parse_seq, bool flush_ostream) : lines{lines}, parse_seq{parse_seq}, flush_ostream{flush_ostream}
 {
     if(parse_seq) parse();
 }
 
-FASTQSequence::FASTQSequence(FASTQSequenceLines&& lines, bool parse_seq) : lines{std::move(lines)}, parse_seq{parse_seq}
+FASTQSequence::FASTQSequence(FASTQSequenceLines&& lines, bool parse_seq, bool flush_ostream) : lines{std::move(lines)}, parse_seq{parse_seq}, flush_ostream{flush_ostream}
 {
     if(parse_seq) parse();
 }
 
-FASTQSequence::FASTQSequence(const std::string& line1, const std::string& line2, const std::string& line3, const std::string& line4, bool parse_seq) : lines{{line1, line2, line3, line4}}, parse_seq{parse_seq}
+FASTQSequence::FASTQSequence(const std::string& line1, const std::string& line2, const std::string& line3, const std::string& line4, bool parse_seq, bool flush_ostream) : lines{{line1, line2, line3, line4}}, parse_seq{parse_seq}, flush_ostream{flush_ostream}
 {
     if(parse_seq) parse();
 }
 
-FASTQSequence::FASTQSequence(std::string&& line1, std::string&& line2, std::string&& line3, std::string&& line4, bool parse_seq) : lines{{std::move(line1), std::move(line2), std::move(line3), std::move(line4)}}, parse_seq{parse_seq}
+FASTQSequence::FASTQSequence(std::string&& line1, std::string&& line2, std::string&& line3, std::string&& line4, bool parse_seq, bool flush_ostream) : lines{{std::move(line1), std::move(line2), std::move(line3), std::move(line4)}}, parse_seq{parse_seq}, flush_ostream{flush_ostream}
 {
     if(parse_seq) parse();
 }
 
-FASTQSequence::FASTQSequence(const FASTQSequence& seq) : lines{seq.lines}, read_length{seq.read_length}, parse_seq{seq.parse_seq} {}
+FASTQSequence::FASTQSequence(const FASTQSequence& seq) : lines{seq.lines}, read_length{seq.read_length}, parse_seq{seq.parse_seq}, flush_ostream{seq.flush_ostream} {}
 
-FASTQSequence::FASTQSequence(FASTQSequence&& seq) : lines{std::move(seq.lines)}, read_length{seq.read_length}, parse_seq{seq.parse_seq} {}
+FASTQSequence::FASTQSequence(FASTQSequence&& seq) : lines{std::move(seq.lines)}, read_length{seq.read_length}, parse_seq{seq.parse_seq}, flush_ostream{seq.flush_ostream} {}
 
 FASTQSequence::~FASTQSequence() noexcept {}
 
@@ -48,6 +48,7 @@ FASTQSequence& FASTQSequence::operator=(const FASTQSequence& seq)
         read_length = seq.read_length;
         group_id = seq.group_id;
         parse_seq = seq.parse_seq;
+        flush_ostream = seq.flush_ostream;
     }
     return *this;
 }
@@ -60,9 +61,11 @@ FASTQSequence& FASTQSequence::operator=(FASTQSequence&& seq)
         read_length = seq.read_length;
         group_id = std::move(seq.group_id);
         parse_seq = seq.parse_seq;
+        flush_ostream = seq.flush_ostream;
         seq.read_length = 0;
         seq.group_id.clear();
         seq.parse_seq = false;
+        seq.flush_ostream = false;
     }
     return *this;
 }
@@ -101,11 +104,20 @@ void FASTQSequence::parse()
 // Output of FASTQ sequence.
 std::ostream& operator<<(std::ostream& os, const FASTQSequence& seq)
 {
-    os << seq[FASTQSequence::Identifier] << '\n';
-    os << seq[FASTQSequence::Sequence] << '\n';
-    os << seq[FASTQSequence::Option] << '\n';
-    // Flush sequence lines to output stream in the end.
-    os << seq[FASTQSequence::Quality] << '\n';
+    if(seq.getFlushOstream())
+    {
+        os << seq[FASTQSequence::Identifier] << std::endl;
+        os << seq[FASTQSequence::Sequence] << std::endl;
+        os << seq[FASTQSequence::Option] << std::endl;
+        os << seq[FASTQSequence::Quality] << std::endl;
+    }
+    else
+    {
+        os << seq[FASTQSequence::Identifier] << '\n';
+        os << seq[FASTQSequence::Sequence] << '\n';
+        os << seq[FASTQSequence::Option] << '\n';
+        os << seq[FASTQSequence::Quality] << '\n';
+    }
     return os;
 }
 

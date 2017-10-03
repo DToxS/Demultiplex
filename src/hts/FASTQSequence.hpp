@@ -43,6 +43,10 @@ protected:
     // Validate FASTQ sequence format.
     bool parse_seq {false};
 
+    /// \brief Flush each written sequence line from output stream to disk.
+    /// Note: this option needs to be switched on in a multi-threading envronment.
+    bool flush_ostream {false};
+
 protected:
 
     // Set the group ID of FASTQ sequence using sequence information.
@@ -55,13 +59,13 @@ public:
     
     FASTQSequence();
     
-    FASTQSequence(const FASTQSequenceLines& lines, bool parse_seq=false);
+    FASTQSequence(const FASTQSequenceLines& lines, bool parse_seq=false, bool flush_ostream=false);
     
-    FASTQSequence(FASTQSequenceLines&& lines, bool parse_seq=false);
+    FASTQSequence(FASTQSequenceLines&& lines, bool parse_seq=false, bool flush_ostream=false);
     
-    FASTQSequence(const std::string& line1, const std::string& line2, const std::string& line3, const std::string& line4, bool parse_seq=true);
+    FASTQSequence(const std::string& line1, const std::string& line2, const std::string& line3, const std::string& line4, bool parse_seq=true, bool flush_ostream=false);
     
-    FASTQSequence(std::string&& line1, std::string&& line2, std::string&& line3, std::string&& line4, bool parse_seq=true);
+    FASTQSequence(std::string&& line1, std::string&& line2, std::string&& line3, std::string&& line4, bool parse_seq=true, bool flush_ostream=false);
     
     FASTQSequence(const FASTQSequence& seq);
     
@@ -111,6 +115,16 @@ public:
     void setParseSequence(bool parse_seq_val)
     {
         parse_seq = parse_seq_val;
+    }
+
+    bool getFlushOstream() const
+    {
+        return flush_ostream;
+    }
+
+    void setFlushOstream(bool flush_ostream_val)
+    {
+        flush_ostream = flush_ostream_val;
     }
 
     const std::string& getIdentifierLine() const

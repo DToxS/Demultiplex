@@ -15,7 +15,7 @@
 namespace hts
 {
 
-using ConvIlluminaFASTQFile = FASTQFileReader<ConvIlluminaFASTQSequence, bool, bool, bool>;
+using ConvIlluminaFASTQFile = FASTQFileReader<ConvIlluminaFASTQSequence, bool, bool, bool, bool>;
 
 }
 

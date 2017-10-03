@@ -14,28 +14,28 @@ namespace hts
 DGEIlluminaFASTQSequence::DGEIlluminaFASTQSequence() {}
 
 // parse_seq is defaulted to true for the parsing of IlluminaFASTQSequence.
-DGEIlluminaFASTQSequence::DGEIlluminaFASTQSequence(const FASTQSequenceLines& lines, bool parse_seq, bool parse_seq_id_level_1, bool parse_seq_id_level_2) : IlluminaFASTQSequence(lines, parse_seq, parse_seq_id_level_1, parse_seq_id_level_2)
+DGEIlluminaFASTQSequence::DGEIlluminaFASTQSequence(const FASTQSequenceLines& lines, bool parse_seq, bool parse_seq_id_level_1, bool parse_seq_id_level_2, bool flush_ostream) : IlluminaFASTQSequence(lines, parse_seq, parse_seq_id_level_1, parse_seq_id_level_2, flush_ostream)
 {
     setGroupId();
     setBarcode();
 }
 
 // parse_seq is defaulted to true for the parsing of IlluminaFASTQSequence.
-DGEIlluminaFASTQSequence::DGEIlluminaFASTQSequence(FASTQSequenceLines&& lines, bool parse_seq, bool parse_seq_id_level_1, bool parse_seq_id_level_2) : IlluminaFASTQSequence(std::move(lines), parse_seq, parse_seq_id_level_1, parse_seq_id_level_2)
+DGEIlluminaFASTQSequence::DGEIlluminaFASTQSequence(FASTQSequenceLines&& lines, bool parse_seq, bool parse_seq_id_level_1, bool parse_seq_id_level_2, bool flush_ostream) : IlluminaFASTQSequence(std::move(lines), parse_seq, parse_seq_id_level_1, parse_seq_id_level_2, flush_ostream)
 {
     setGroupId();
     setBarcode();
 }
 
 // parse_seq is defaulted to true for the parsing of IlluminaFASTQSequence.
-DGEIlluminaFASTQSequence::DGEIlluminaFASTQSequence(const std::string& line1, const std::string& line2, const std::string& line3, const std::string& line4, bool parse_seq, bool parse_seq_id_level_1, bool parse_seq_id_level_2) : IlluminaFASTQSequence(line1, line2, line3, line4, parse_seq, parse_seq_id_level_1, parse_seq_id_level_2)
+DGEIlluminaFASTQSequence::DGEIlluminaFASTQSequence(const std::string& line1, const std::string& line2, const std::string& line3, const std::string& line4, bool parse_seq, bool parse_seq_id_level_1, bool parse_seq_id_level_2, bool flush_ostream) : IlluminaFASTQSequence(line1, line2, line3, line4, parse_seq, parse_seq_id_level_1, parse_seq_id_level_2, flush_ostream)
 {
     setGroupId();
     setBarcode();
 }
 
 // parse_seq is defaulted to true for the parsing of IlluminaFASTQSequence.
-DGEIlluminaFASTQSequence::DGEIlluminaFASTQSequence(std::string&& line1, std::string&& line2, std::string&& line3, std::string&& line4, bool parse_seq, bool parse_seq_id_level_1, bool parse_seq_id_level_2) : IlluminaFASTQSequence(std::move(line1), std::move(line2), std::move(line3), std::move(line4), parse_seq, parse_seq_id_level_1, parse_seq_id_level_2)
+DGEIlluminaFASTQSequence::DGEIlluminaFASTQSequence(std::string&& line1, std::string&& line2, std::string&& line3, std::string&& line4, bool parse_seq, bool parse_seq_id_level_1, bool parse_seq_id_level_2, bool flush_ostream) : IlluminaFASTQSequence(std::move(line1), std::move(line2), std::move(line3), std::move(line4), parse_seq, parse_seq_id_level_1, parse_seq_id_level_2, flush_ostream)
 {
     setGroupId();
     setBarcode();

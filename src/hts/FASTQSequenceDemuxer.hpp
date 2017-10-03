@@ -186,6 +186,12 @@ public:
         for(const auto& group_seq : group_seqs)
         {
             // Write all the sequences in the maxout group to output file.
+            // Note:
+            // 1) No need to flush output stream every time after writing a sequence in a
+            // signle threading environment.
+            // 2) In a multithreading environment where multiple threads write sequences
+            // to the same output stream, then the stream must be flushed after each output
+            // operation, aka. flush after writing each single line of a single sequence.
             output_streams.writeSequence(group_seq, group_id);
             // Print all the sequences in the maxout group to standard output.
             if(verbose) std::cout << group_seq;

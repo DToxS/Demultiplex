@@ -20,7 +20,7 @@ namespace hts
 IlluminaFASTQSequence::IlluminaFASTQSequence() : FASTQSequence() {}
 
 // parse_seq is defaulted to true for the parsing of IlluminaFASTQSequence.
-IlluminaFASTQSequence::IlluminaFASTQSequence(const FASTQSequenceLines& lines, bool parse_seq, bool parse_seq_id_level_1, bool parse_seq_id_level_2) : FASTQSequence(lines, parse_seq), parse_seq_id_level_1{parse_seq_id_level_1}, parse_seq_id_level_2{parse_seq_id_level_2}
+IlluminaFASTQSequence::IlluminaFASTQSequence(const FASTQSequenceLines& lines, bool parse_seq, bool parse_seq_id_level_1, bool parse_seq_id_level_2, bool flush_ostream) : FASTQSequence(lines, parse_seq, flush_ostream), parse_seq_id_level_1{parse_seq_id_level_1}, parse_seq_id_level_2{parse_seq_id_level_2}
 {
     // Adjust IlluminaFASTQSequence parsing options.
     adjustParseOption();
@@ -34,7 +34,7 @@ IlluminaFASTQSequence::IlluminaFASTQSequence(const FASTQSequenceLines& lines, bo
 }
 
 // parse_seq is defaulted to true for the parsing of IlluminaFASTQSequence.
-IlluminaFASTQSequence::IlluminaFASTQSequence(FASTQSequenceLines&& lines, bool parse_seq, bool parse_seq_id_level_1, bool parse_seq_id_level_2) : FASTQSequence(std::move(lines), parse_seq), parse_seq_id_level_1{parse_seq_id_level_1}, parse_seq_id_level_2{parse_seq_id_level_2}
+IlluminaFASTQSequence::IlluminaFASTQSequence(FASTQSequenceLines&& lines, bool parse_seq, bool parse_seq_id_level_1, bool parse_seq_id_level_2, bool flush_ostream) : FASTQSequence(std::move(lines), parse_seq, flush_ostream), parse_seq_id_level_1{parse_seq_id_level_1}, parse_seq_id_level_2{parse_seq_id_level_2}
 {
     // Adjust IlluminaFASTQSequence parsing options.
     adjustParseOption();
@@ -48,7 +48,7 @@ IlluminaFASTQSequence::IlluminaFASTQSequence(FASTQSequenceLines&& lines, bool pa
 }
 
 // parse_seq is defaulted to true for the parsing of IlluminaFASTQSequence.
-IlluminaFASTQSequence::IlluminaFASTQSequence(const std::string& line1, const std::string& line2, const std::string& line3, const std::string& line4, bool parse_seq, bool parse_seq_id_level_1, bool parse_seq_id_level_2) : FASTQSequence(line1, line2, line3, line4, parse_seq), parse_seq_id_level_1{parse_seq_id_level_1}, parse_seq_id_level_2{parse_seq_id_level_2}
+IlluminaFASTQSequence::IlluminaFASTQSequence(const std::string& line1, const std::string& line2, const std::string& line3, const std::string& line4, bool parse_seq, bool parse_seq_id_level_1, bool parse_seq_id_level_2, bool flush_ostream) : FASTQSequence(line1, line2, line3, line4, parse_seq, flush_ostream), parse_seq_id_level_1{parse_seq_id_level_1}, parse_seq_id_level_2{parse_seq_id_level_2}
 {
     // Adjust IlluminaFASTQSequence parsing options.
     adjustParseOption();
@@ -62,7 +62,7 @@ IlluminaFASTQSequence::IlluminaFASTQSequence(const std::string& line1, const std
 }
 
 // parse_seq is defaulted to true for the parsing of IlluminaFASTQSequence.
-IlluminaFASTQSequence::IlluminaFASTQSequence(std::string&& line1, std::string&& line2, std::string&& line3, std::string&& line4, bool parse_seq, bool parse_seq_id_level_1, bool parse_seq_id_level_2) : FASTQSequence(std::move(line1), std::move(line2), std::move(line3), std::move(line4), parse_seq), parse_seq_id_level_1{parse_seq_id_level_1}, parse_seq_id_level_2{parse_seq_id_level_2}
+IlluminaFASTQSequence::IlluminaFASTQSequence(std::string&& line1, std::string&& line2, std::string&& line3, std::string&& line4, bool parse_seq, bool parse_seq_id_level_1, bool parse_seq_id_level_2, bool flush_ostream) : FASTQSequence(std::move(line1), std::move(line2), std::move(line3), std::move(line4), parse_seq, flush_ostream), parse_seq_id_level_1{parse_seq_id_level_1}, parse_seq_id_level_2{parse_seq_id_level_2}
 {
     // Adjust IlluminaFASTQSequence parsing options.
     adjustParseOption();

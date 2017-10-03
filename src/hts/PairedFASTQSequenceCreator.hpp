@@ -176,6 +176,15 @@ public:
     }
 };
 
+/// Output of paired FASTQ sequence.
+template<typename SeqType>
+std::ostream& operator<<(std::ostream& os, const PairedFASTQSequenceCreator<SeqType>& seq)
+{
+    os << seq.getSequence1();
+    os << seq.getSequence2();
+    return os;
+}
+
 }
 
 #endif /* PairedFASTQSequenceCreator_hpp */

@@ -15,7 +15,7 @@
 namespace hts
 {
 
-using DGEIlluminaFASTQFile = FASTQFileReader<DGEIlluminaFASTQSequence, bool, bool, bool>;
+using DGEIlluminaFASTQFile = FASTQFileReader<DGEIlluminaFASTQSequence, bool, bool, bool, bool>;
 
 }
 

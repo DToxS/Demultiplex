@@ -22,9 +22,6 @@ namespace hts
 using PairedConvIlluminaFASTQSequence = PairedFASTQSequenceCreator<ConvIlluminaFASTQSequence>;
 using PairedConvIlluminaFASTQSequences = std::vector<PairedConvIlluminaFASTQSequence>;
 
-// Output of paired Conv FASTQ sequence.
-std::ostream& operator<<(std::ostream& os, const PairedConvIlluminaFASTQSequence& seq);
-
 }
 
 #endif /* PairedConvIlluminaFASTQSequence_hpp */

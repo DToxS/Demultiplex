@@ -21,7 +21,6 @@ FASTQSequenceParserArguments::FASTQSequenceParserArguments(int argc, const char*
     utk::ProgramArguments(argc, argv, min_argc, max_argc),
     n_read_seqs{131072},
     n_group_seqs{131072},
-    flush_ostream{true},
     fastq_paths_file_line_delim_type{"unix"},
     well_barcode_file_line_delim_type{"unix"},
     fastq_data_file_line_delim_type{"unix"} {}
@@ -46,13 +45,11 @@ void FASTQSequenceParserArguments::assignOptionalArguments()
     // 7th argument.
     if(argc > 7) n_group_seqs = utk::convert<std::size_t>(utk::toLowerString(argv[7]));
     // 8th argument.
-    if(argc > 8) flush_ostream = utk::convert<bool>(utk::toLowerString(argv[8]));
+    if(argc > 8) fastq_paths_file_line_delim_type = utk::toLowerString(argv[8]);
     // 9th argument.
-    if(argc > 9) fastq_paths_file_line_delim_type = utk::toLowerString(argv[9]);
+    if(argc > 9) well_barcode_file_line_delim_type = utk::toLowerString(argv[9]);
     // 10th argument.
-    if(argc > 10) well_barcode_file_line_delim_type = utk::toLowerString(argv[10]);
-    // 11th argument.
-    if(argc > 11) fastq_data_file_line_delim_type = utk::toLowerString(argv[11]);
+    if(argc > 10) fastq_data_file_line_delim_type = utk::toLowerString(argv[10]);
 }
 
 /// Check input arguments.
@@ -120,7 +117,7 @@ void FASTQSequenceParserArguments::validateArguments()
 /// Print help messages on program usage.
 void FASTQSequenceParserArguments::helpMessage()
 {
-    std::cerr << "Usage: " << prog_name << " [FASTQ List File] [Well-Barcode File] [Demux Main Name] [Demux Directory] [Sequence Type] [Sequences Read Number] [Sequences Write Number] [Flush Disk] [Line Delimiter Type of FASTQ Path File] [Line Delimiter Type of Well-Barcode File] [Line Delimiter Type of FASTQ Data File]" << '\n';
+    std::cerr << "Usage: " << prog_name << " [FASTQ List File] [Well-Barcode File] [Demux Main Name] [Demux Directory] [Sequence Type] [Sequences Read Number] [Sequences Write Number] [Line Delimiter Type of FASTQ Path File] [Line Delimiter Type of Well-Barcode File] [Line Delimiter Type of FASTQ Data File]" << '\n';
     std::cerr << "where:" << '\n';
     std::cerr << "       " << "[FASTQ Path File]: text file containing the paths of input FASTQ data files (Format: Read1, Read2)." << '\n';
     std::cerr << "       " << "[Well-Barcode File]: text file containing a list of sample barcodes (Format: Plate, Well, Barcode)." << '\n';
@@ -129,10 +126,9 @@ void FASTQSequenceParserArguments::helpMessage()
     std::cerr << "       " << "[Sequence Type]: type of input FASTQ sequences: DGE or Conv." << '\n';
     std::cerr << "       " << "[Sequences Read Number]: number of input FASTQ sequences to read each time (Default: 131072)." << '\n';
     std::cerr << "       " << "[Sequences Write Number]: number of demultiplexed FASTQ sequences to write each time (Default: 131072)." << '\n';
-    std::cerr << "       " << "[Flush Disk]: flushing of a set of written sequences to disk each time (Default: true)." << '\n';
-    std::cerr << "       " << "[Line Delimiter Type of FASTQ Path File]: type of line delimiter of FASTQ path file: unix, windows, or macintosh (Default: unix)." << '\n';
-    std::cerr << "       " << "[Line Delimiter Type of Well-Barcode File]: type of line delimiter of well-barcode file: unix, windows, or macintosh (Default: unix)." << '\n';
-    std::cerr << "       " << "[Line Delimiter Type of FASTQ Data File]: type of line delimiter of FASTQ data files: unix, windows, or macintosh (Default: unix)." << std::endl;
+    std::cerr << "       " << "[Line Delimiter Type of FASTQ Path File]: type of line delimiter of FASTQ path file: unix or windows (Default: unix)." << '\n';
+    std::cerr << "       " << "[Line Delimiter Type of Well-Barcode File]: type of line delimiter of well-barcode file: unix or windows (Default: unix)." << '\n';
+    std::cerr << "       " << "[Line Delimiter Type of FASTQ Data File]: type of line delimiter of FASTQ data files: unix or windows (Default: unix)." << std::endl;
 }
 
 }

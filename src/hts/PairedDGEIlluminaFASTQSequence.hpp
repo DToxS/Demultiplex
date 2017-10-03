@@ -21,9 +21,6 @@ namespace hts
 using PairedDGEIlluminaFASTQSequence = PairedFASTQSequenceCreator<DGEIlluminaFASTQSequence>;
 using PairedDGEIlluminaFASTQSequences = std::vector<PairedDGEIlluminaFASTQSequence>;
 
-// Output of paired DGE FASTQ sequence.
-std::ostream& operator<<(std::ostream& os, const PairedDGEIlluminaFASTQSequence& seq);
-
 }
 
 #endif /* PairedDGEIlluminaFASTQSequence_hpp */
