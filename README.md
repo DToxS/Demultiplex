@@ -4,13 +4,13 @@ This is the source code of the C++ program for demultiplexing the mRNA-sequencin
 
 To compile the source code, open a terminal console and change current directory to the top directory of the source code tree, and then issue the following command:
 
-*In Unix-alike systems (e.g. Linux and MacOS):*
+In Unix-alike systems (e.g. Linux and MacOS):
 
 ```bash
-g++ -Wall -std=c++1z -I "${SRC_FILE_DIR}" -O3 -o "${BIN_FILE}" $(find "${SRC_FILE_DIR}" -type f -name "*cpp")
+g++ -Wall -std=c++1z -I "${SRC_FILE_DIR}" -O3 -o "${BIN_FILE}" main.cpp hts/*cpp utk/*cpp
 ```
 
-*In Windows system:*
+In Windows system:
 
 ```bat
 cl /std:c++17 /EHsc /Ox /I%SRC_FILE_DIR% /Fe%BIN_FILE% main.cpp hts\*cpp utk\*cpp
