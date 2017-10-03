@@ -42,17 +42,12 @@ public:
     PairedFASTQFileGroupOutputStreams(const std::string& main_file_name, const std::string& file_dir, const WellBarcodeTable& well_barcode_table);
 
     template <typename SeqType>
-    void writeSequence(const PairedFASTQSequenceCreator<SeqType>& seq, const GroupIdType& group_id, bool flush=false)
+    void writeSequence(const PairedFASTQSequenceCreator<SeqType>& seq, const GroupIdType& group_id)
     {
         if constexpr (std::is_base_of_v<IlluminaFASTQSequence, SeqType>)
         {
             operator[](group_id).first << seq.getSequence1();
             operator[](group_id).second << seq.getSequence2();
-            if(flush)
-            {
-                operator[](group_id).first.flush();
-                operator[](group_id).second.flush();
-            }
         }
         else throw std::logic_error("Cannot write non-IlluminaFASTQSequence paired objects");
     }

@@ -104,20 +104,8 @@ void FASTQSequence::parse()
 // Output of FASTQ sequence.
 std::ostream& operator<<(std::ostream& os, const FASTQSequence& seq)
 {
-    if(seq.getFlushOstream())
-    {
-        os << seq[FASTQSequence::Identifier] << std::endl;
-        os << seq[FASTQSequence::Sequence] << std::endl;
-        os << seq[FASTQSequence::Option] << std::endl;
-        os << seq[FASTQSequence::Quality] << std::endl;
-    }
-    else
-    {
-        os << seq[FASTQSequence::Identifier] << '\n';
-        os << seq[FASTQSequence::Sequence] << '\n';
-        os << seq[FASTQSequence::Option] << '\n';
-        os << seq[FASTQSequence::Quality] << '\n';
-    }
+    os << seq[FASTQSequence::Identifier] << '\n' << seq[FASTQSequence::Sequence] << '\n' << seq[FASTQSequence::Option] << '\n' << seq[FASTQSequence::Quality] << '\n';
+    if(seq.getFlushOstream()) os.flush();
     return os;
 }
 
