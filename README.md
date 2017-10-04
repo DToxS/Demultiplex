@@ -21,12 +21,3 @@ cl /std:c++17 /EHsc /Ox /I%SRC_FILE_DIR% /Fe%BIN_FILE% main.cpp hts\*cpp utk\*cp
 where, `${SRC_FILE_DIR}` or `%SRC_FILE_DIR%` is the top directory of the source code tree, and `${BIN_FILE}` or `%BIN_FILE%` is the executable file to generate.
 
 Note: the source code must be compiled by the C++ compilers that supports the C++17 standard, such as GCC 7.0, Clang 3.9, Visual Studio 2017, or newer.
-
-## Launching Program
-
-To run the executable program, issue the following command:
-
-```bash
-"${BIN_FILE}" "${FASTQ_FILE_LIST}" "${WELL_BARCODE_FILE}" "${DEMUX_FILE_NAME}" "${DEMUX_DIR}" "${DATA_TYPE}"
-
-```
