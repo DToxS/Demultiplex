@@ -37,6 +37,11 @@ protected:
 
 protected:
 
+    // Initialize all data members.
+    void initialize(const PairedDGEIlluminaFASTQSequence& paired_dge_seq, bool parse_compos_seq=false);
+
+    void initialize(PairedDGEIlluminaFASTQSequence&& paired_dge_seq, bool parse_compos_seq=false);
+
     // Set the group ID of FASTQ sequence using sequence information.
     virtual void setGroupId() override
     {
@@ -45,9 +50,15 @@ protected:
 
 public:
 
-    CompositedDGEIlluminaFASTQSequence(const PairedDGEIlluminaFASTQSequence& paired_dge_seq, bool parse_dge_seq=false);
+    CompositedDGEIlluminaFASTQSequence() {}
 
-    CompositedDGEIlluminaFASTQSequence(PairedDGEIlluminaFASTQSequence&& paired_dge_seq, bool parse_dge_seq=false);
+    CompositedDGEIlluminaFASTQSequence(const PairedDGEIlluminaFASTQSequence& paired_dge_seq, bool parse_compos_seq=false);
+
+    CompositedDGEIlluminaFASTQSequence(PairedDGEIlluminaFASTQSequence&& paired_dge_seq, bool parse_compos_seq=false);
+
+    CompositedDGEIlluminaFASTQSequence(const DGEIlluminaFASTQSequence& seq_1, const DGEIlluminaFASTQSequence& seq_2, bool parse_paired_seq=false, bool parse_compos_seq=false);
+
+    CompositedDGEIlluminaFASTQSequence(DGEIlluminaFASTQSequence&& seq_1, DGEIlluminaFASTQSequence&& seq_2, bool parse_paired_seq=false, bool parse_compos_seq=false);
 
     // Retrieve the well barcode of DGE FASTQ sequence.
     const std::string& getWellBarcode() const

@@ -11,7 +11,27 @@
 namespace hts
 {
 
-CompositedDGEIlluminaFASTQSequence::CompositedDGEIlluminaFASTQSequence(const PairedDGEIlluminaFASTQSequence& paired_dge_seq, bool parse_dge_seq)
+CompositedDGEIlluminaFASTQSequence::CompositedDGEIlluminaFASTQSequence(const PairedDGEIlluminaFASTQSequence& paired_dge_seq, bool parse_compos_seq)
+{
+    initialize(paired_dge_seq, parse_compos_seq);
+}
+
+CompositedDGEIlluminaFASTQSequence::CompositedDGEIlluminaFASTQSequence(PairedDGEIlluminaFASTQSequence&& paired_dge_seq, bool parse_compos_seq)
+{
+    initialize(std::move(paired_dge_seq), parse_compos_seq);
+}
+
+CompositedDGEIlluminaFASTQSequence::CompositedDGEIlluminaFASTQSequence(const DGEIlluminaFASTQSequence& seq_1, const DGEIlluminaFASTQSequence& seq_2, bool parse_paired_seq, bool parse_compos_seq)
+{
+    initialize(PairedDGEIlluminaFASTQSequence(seq_1, seq_2, parse_paired_seq), parse_compos_seq);
+}
+
+CompositedDGEIlluminaFASTQSequence::CompositedDGEIlluminaFASTQSequence(DGEIlluminaFASTQSequence&& seq_1, DGEIlluminaFASTQSequence&& seq_2, bool parse_paired_seq, bool parse_compos_seq)
+{
+    initialize(PairedDGEIlluminaFASTQSequence(std::move(seq_1), std::move(seq_2), parse_paired_seq), parse_compos_seq);
+}
+
+void CompositedDGEIlluminaFASTQSequence::initialize(const PairedDGEIlluminaFASTQSequence& paired_dge_seq, bool parse_compos_seq)
 {
     // Fill in FASTQSequenceLines.
     const DGEIlluminaFASTQSequence& dge_seq1 = paired_dge_seq.getSequence1();
@@ -29,7 +49,7 @@ CompositedDGEIlluminaFASTQSequence::CompositedDGEIlluminaFASTQSequence(const Pai
     lines[3] = dge_seq2.getQualityLine();
 
     // Parse the composite FASTQ sequence.
-    parse_seq = parse_dge_seq;
+    parse_seq = parse_compos_seq;
     if(parse_seq) parse();
 
     // Fill in sequence Identifier info.
@@ -48,7 +68,7 @@ CompositedDGEIlluminaFASTQSequence::CompositedDGEIlluminaFASTQSequence(const Pai
     setGroupId();
 }
 
-CompositedDGEIlluminaFASTQSequence::CompositedDGEIlluminaFASTQSequence(PairedDGEIlluminaFASTQSequence&& paired_dge_seq, bool parse_dge_seq)
+void CompositedDGEIlluminaFASTQSequence::initialize(PairedDGEIlluminaFASTQSequence&& paired_dge_seq, bool parse_compos_seq)
 {
     DGEIlluminaFASTQSequence& dge_seq1 = paired_dge_seq.getSequence1();
     DGEIlluminaFASTQSequence& dge_seq2 = paired_dge_seq.getSequence2();
@@ -65,7 +85,7 @@ CompositedDGEIlluminaFASTQSequence::CompositedDGEIlluminaFASTQSequence(PairedDGE
     lines[3] = std::move(dge_seq2.getQualityLine());
 
     // Parse the composite FASTQ sequence.
-    parse_seq = parse_dge_seq;
+    parse_seq = parse_compos_seq;
     if(parse_seq) parse();
 
     // Fill in sequence Identifier info.

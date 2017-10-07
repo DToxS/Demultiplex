@@ -54,7 +54,7 @@ public:
     ///                     and creating a FASTQ sequence correctly assembled from
     ///                     the read raw sequence.
     template<typename... ArgTypes>
-    void run(std::size_t n_read_seqs, const ArgTypes&... args)
+    void run(std::size_t n_read_seqs, ArgTypes&&... args)
     {
         // Initial reading of multiple FASTQ sequences.
         if(auto seqs = file_reader.readSequences(n_read_seqs); seqs.size()>0)
@@ -65,8 +65,7 @@ public:
                 {
                     // Assemble a FASTQ sequence and add it to corresponding
                     // sequence group in demultiplexer.
-                    seq_demuxer.addSequence(*iter, args...);
-
+                    seq_demuxer.addSequence(std::move(*iter), std::forward<ArgTypes>(args)...);
                 } catch (const std::logic_error& e)
                 {
                     // Error occurs when adding a new FASTQ sequence to demultiplxer.
@@ -89,7 +88,7 @@ public:
                     {
                         // Assemble a FASTQ sequence and add it to corresponding
                         // sequence group in demultiplexer.
-                        seq_demuxer.addSequence(*iter, args...);
+                        seq_demuxer.addSequence(std::move(*iter), std::forward<ArgTypes>(args)...);
                     } catch (const std::logic_error& e)
                     {
                         // Error occurs when adding a new FASTQ sequence to demultiplxer.
