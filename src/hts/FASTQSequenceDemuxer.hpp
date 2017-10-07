@@ -26,14 +26,14 @@ namespace hts
 ///
 /// Template Arguments:
 ///
-/// \tparam  OutSeqType   A FASTQSequence-derived class with a member function getGroupId defined.
-/// \tparam  ArgTypes  The types of arbitrary arguments for creating OutSeqType sequence object.
-template<typename OutputStreamsType, typename OutSeqType, typename... ArgTypes>
+/// \tparam  SeqType   A FASTQSequence-derived class with a member function getGroupId defined.
+/// \tparam  ArgTypes  The types of arbitrary arguments for creating SeqType sequence object.
+template<typename OutputStreamsType, typename SeqType, typename... ArgTypes>
 class FASTQSequenceDemuxer
 {
 public:
 
-    using FASTQSequenceGroupsType = FASTQSequenceGroups<OutSeqType>;
+    using FASTQSequenceGroupsType = FASTQSequenceGroups<SeqType>;
 
 protected:
     
@@ -47,7 +47,7 @@ protected:
     /// group ID.
     OutputStreamsType output_streams;
 
-    /// \brief OutSeqType sequence groups
+    /// \brief SeqType sequence groups
     /// Each group include a group ID and multiple sequences with that ID.
     /// Note: for the sake of convenience, the group ID of a sequence is mapped
     /// to cooresponding well number according to well barcode table and then
@@ -57,12 +57,12 @@ protected:
     /// \brief Well barcode table
     /// An association between well barcode (key) and corresponding well number
     /// (value), where the well barcode will be used to match the group ID of
-    /// OutSeqType sequence.
+    /// SeqType sequence.
     WellBarcodeTable well_barcode_table;
 
     /// \brief Capacity of sequence groups
     /// A uniform capacity of all sequence groups in terms of the maximum number
-    /// of OutSeqType sequences that any group can hold.
+    /// of SeqType sequences that any group can hold.
     std::size_t n_max_seqs {0};
 
     /// \brief Flush written sequences from output stream to disk.
@@ -81,24 +81,13 @@ protected:
 protected:
     
     /// \brief Initialize sequence groups
-    /// Initialize the groups of OutSeqType sequences by well numbers.
+    /// Initialize the groups of SeqType sequences by well numbers.
     void initSequenceGroups()
     {
         for(const auto& well_barcode : well_barcode_table)
         {
             seq_groups[well_barcode.second] = SequencesType();
         }
-    }
-
-    /// \brief Function to create a OutSeqType sequence
-    /// This pure virtual function must be defined by derived classes.
-    /// \param  args  arbitrary arguments needed by sequence verification and
-    ///               creation.
-    /// Note: move semantics is supported.
-    template<typename... Args>
-    OutSeqType makeSequence(Args&&... args)
-    {
-        return OutSeqType(std::forward<Args>(args)...);
     }
 
 public:
@@ -110,13 +99,13 @@ public:
         well_barcode_table = well_barcode_reader.read();
         // Initialize output streams for demultiplexed grouped sequences.
         output_streams = OutputStreamsType(main_file_name, file_dir, well_barcode_table);
-        // Initialize the groups of OutSeqType sequences by well numbers.
+        // Initialize the groups of SeqType sequences by well numbers.
         initSequenceGroups();
     }
 
     FASTQSequenceDemuxer(const WellBarcodeTable& table, OutputStreamsType&& ostreams, std::size_t max_seqs=0, bool flush=true, bool verb=false) : output_streams{std::move(ostreams)}, well_barcode_table{table}, n_max_seqs{max_seqs}, flush_ostream{flush}, verbose{verb}
     {
-        // Initialize the groups of OutSeqType sequences by well numbers.
+        // Initialize the groups of SeqType sequences by well numbers.
         initSequenceGroups();
     }
 
@@ -124,9 +113,9 @@ public:
 
     FASTQSequenceDemuxer& operator=(const FASTQSequenceDemuxer&) = delete;
 
-    /// \brief Add a OutSeqType sequence to sequence groups
-    /// Add a OutSeqType sequence into the sequence groups.
-    /// \param  seq  A OutSeqType sequence.
+    /// \brief Add a SeqType sequence to sequence groups
+    /// Add a SeqType sequence into the sequence groups.
+    /// \param  seq  A SeqType sequence.
     template<typename T>
     void addSequence(T&& seq)
     {
@@ -140,7 +129,7 @@ public:
             auto& group_seqs = seq_groups[group_id];
             // Write the sequence group if it's maxout.
             if(group_seqs.size() >= n_max_seqs) writeSequences(group_id, group_seqs, flush_ostream);
-            // Add a OutSeqType sequence to the sequence group.
+            // Add a SeqType sequence to the sequence group.
             if(n_max_seqs==0 || (n_max_seqs>0 && group_seqs.size()<n_max_seqs))
             {
                 // The sequence is added into a corresponding group.
@@ -156,16 +145,16 @@ public:
         }
     }
 
-    /// \brief Create and add a OutSeqType sequence
-    /// Use template arguments to create a OutSeqType sequence and add it into
+    /// \brief Create and add a SeqType sequence
+    /// Use template arguments to create a SeqType sequence and add it into
     /// the sequence groups.
     /// \param  args  arbitrary arguments needed by sequence creation.
     template<typename... Args>
     void addSequence(Args&&... args)
     {
-        // Create a OutSeqType sequence using template arguments and add it into
+        // Create a SeqType sequence using template arguments and add it into
         // the sequence groups.
-        addSequence(makeSequence(std::forward<Args>(args)...));
+        addSequence(SeqType(std::forward<Args>(args)...));
     }
 
     /// \brief Write all sequence groups
