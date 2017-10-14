@@ -56,27 +56,7 @@ public:
     template<typename... ArgTypes>
     void run(std::size_t n_read_seqs, ArgTypes&&... args)
     {
-        // Initial reading of multiple FASTQ sequences.
-        if(auto seqs_1 = file_reader_1.readSequences(n_read_seqs), seqs_2 = file_reader_2.readSequences(n_read_seqs); seqs_1.size()>0 && seqs_2.size()>0)
-        {
-            for(auto iter_1=seqs_1.begin(),iter_2=seqs_2.begin(); iter_1!=seqs_1.end()&&iter_2!=seqs_2.end(); ++iter_1,++iter_2)
-            {
-                try
-                {
-                    // Assemble a FASTQ sequence or a pair of sequences and add it to
-                    // corresponding sequence group in demultiplexer.
-                    seq_demuxer.addSequence(std::move(*iter_1), std::move(*iter_2), std::forward<ArgTypes>(args)...);
-
-                } catch (const std::logic_error& e)
-                {
-                    // Error occurs when adding a new FASTQ sequence to demultiplxer.
-                    std::cerr << "Warning: " << e.what() << '!' << std::endl;
-                }
-            }
-        }
-
-        // Subsequent reading of multiple FASTQ sequences before reaching the end
-        // of FASTQ file.
+        // Read multiple FASTQ sequences before reaching the end of FASTQ file.
         while(!file_reader_1.isFileEnd())
         {
             // If the end of FASTQ file is not reached yet, keep reading in
