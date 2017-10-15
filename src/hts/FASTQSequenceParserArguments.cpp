@@ -17,8 +17,8 @@ namespace hts
 {
 
 /// Retrieve input arguments.
-FASTQSequenceParserArguments::FASTQSequenceParserArguments(int argc, const char** argv, int min_argc, int max_argc) :
-    utk::ProgramArguments(argc, argv, min_argc, max_argc),
+FASTQSequenceParserArguments::FASTQSequenceParserArguments(int argc, const char** argv) :
+    utk::ProgramArguments(argc, argv, 6, 11),
     n_read_seqs{131072},
     n_group_seqs{131072},
     fastq_paths_file_line_delim_type{"unix"},

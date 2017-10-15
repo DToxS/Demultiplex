@@ -38,7 +38,7 @@ private:
     bool seq_read {false};
 
     /// \brief Flag for reaching the end of FASTQ file
-    bool file_end {false};
+//    bool file_end {false};
 
     /// \brief Arguments for creating a FASTQ seqiemce
     std::tuple<ArgTypes...> seq_args;
@@ -75,16 +75,11 @@ public:
         return seq_read;
     }
 
-    bool isFileEnd() const
-    {
-        return file_end;
-    }
-
     // Reset file-reading flags for readSequence.
     void reset()
     {
+        utk::LineReader::reset();
         seq_read = false;
-        file_end = false;
     }
 
     const std::tuple<ArgTypes...>& getArguments() const
@@ -105,20 +100,13 @@ public:
         seq_read = false;
         SeqType seq;
 
-        if(!file_end)
+        if(!isFileEnd())
         {
             // Read in 4 lines from FASTQ sequence file.
-            FASTQSequenceLines lines;
+            FASTQSequenceLines seq_lines;
+            auto lines = readLines(FASTQSequence::n_fastq_sequence_lines);
             std::size_t counts = 0;
-            std::string line;
-            while(readLine(line))
-            {
-                lines[counts++] = line;
-                if(counts == FASTQSequence::n_fastq_sequence_lines) break;
-            }
-
-            // Check if the end of FASTQ file is reached.
-            if(eof()) file_end = true;
+            for(auto& line : lines) seq_lines[counts++] = std::move(line);
 
             // Create a FASTQSequence-derived object from the 4 lines read.
             if(counts == FASTQSequence::n_fastq_sequence_lines)
@@ -126,7 +114,7 @@ public:
                 try
                 {
                     // The temporary FASTQSequence is moved to seq.
-                    seq = makeSequence(std::move(lines));
+                    seq = makeSequence(std::move(seq_lines));
                     seq_read = true;
                 } catch(const std::logic_error& e)
                 {

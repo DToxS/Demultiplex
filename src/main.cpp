@@ -24,7 +24,7 @@ int main(int argc, const char *argv[])
     try
     {
         // Retrieve input arguments from command line.
-        hts::FASTQSequenceParserArguments args(argc, argv, 6, 11);
+        hts::FASTQSequenceParserArguments args(argc, argv);
         // Check input arguments.
         args.check();
 

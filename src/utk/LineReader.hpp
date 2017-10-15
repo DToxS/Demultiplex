@@ -10,6 +10,7 @@
 #define LineReader_hpp
 
 #include <string>
+#include <vector>
 #include <fstream>
 
 namespace utk
@@ -23,6 +24,10 @@ namespace utk
 ///     Classic Macintosh: \r
 class LineReader : public std::ifstream
 {
+public:
+
+    using LinesType = std::vector<std::string>;
+
 private:
 
     /// \brief Name of input FASTQ file
@@ -36,6 +41,9 @@ private:
 
     /// \brief Character before the line delimiter
     std::ios::char_type pre_delim;
+
+    /// \brief Flag for reaching the end of file
+    bool file_end;
 
 private:
     
@@ -66,8 +74,23 @@ public:
         return file_name;
     }
 
+    /// \brief Check if the end of file is reached
+    bool isFileEnd() const
+    {
+        return file_end;
+    }
+
+    /// \brief Reset the flag of reaching the end of file
+    void reset()
+    {
+        file_end = false;
+    }
+
     /// \brief Read a text line and remove line delimiters
     bool readLine(std::string& line);
+
+    /// \brief Read multiple text lines
+    LinesType readLines(std::size_t n_lines=0);
 };
 
 }

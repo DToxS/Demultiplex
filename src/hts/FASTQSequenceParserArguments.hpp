@@ -71,7 +71,7 @@ protected:
 public:
 
     /// \brief Retrieve input arguments
-    FASTQSequenceParserArguments(int argc, const char** argv, int min_argc, int max_argc);
+    FASTQSequenceParserArguments(int argc, const char** argv);
 };
 
 }
